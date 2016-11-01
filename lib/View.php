@@ -1,26 +1,33 @@
 <?php
 class View{
-   public $_view;
-   public $_viewPath;
    
-   public $_data;
+   const VIEW_DIR  = 'views';
 
-   public function __construct($viewName, $data = array()){
-      $this->_view = $viewName;
-      $this->_data = $data;
+   protected $_file;
+   protected $_view;
+   protected $_data = array();
+   
+   public function __construct($view, $data = array()){
+      $this->_view = $view;
+	  $this->_file = $this->getViewFilePath($view);	  
+	  $this->_data = $data;
+   }
+   
+   public function getViewFilePath($view){
+      $this->_file = HOME . DS . self::VIEW_DIR . DS . $view . ".php";
+	  return $this->_file;
    }
    
    public function output(){
-      if(file_exists(HOME. DS . VIEWDIR . DS . $this->_view . '.php')){
-         ob_start();
-         extract($this->_data);
-         require_once(HOME. DS . VIEWDIR . DS . $this->_view . '.php');
-         $output = ob_get_contents();
-         ob_end_clean();
-         
-         echo $output;
-      }else{
-         throw new Exception('View file '.$this->_view.' not found');
-      }
+      if(file_exists($this->_file)){	     
+		 extract($this->_data);		 
+		 ob_start();
+		 include($this->_file);
+		 $output = ob_get_contents();
+		 ob_end_clean();
+		 echo $output;
+	  }else{
+	     throw new Exception("Template '{$this->_file}' doesn't exist.");
+	  }
    }
 }

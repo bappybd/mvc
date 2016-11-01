@@ -1,20 +1,30 @@
 <?php
 class Bootstrap{
-   
-   public function __construct(){
-   
-   }
+   public $urlParams   = '';
    
    public function run(){
+	  $controller  = 'home';
+      $action      = 'index';	
+   
       if(isset($_GET['load'])){
-         $params = explode('/', $_GET['load']);
-         $controller = ucfirst(strtolower($params[0]));
-         $controller .= 'Controller';
          
-         $action = strtolower($params[1]);
+         $params = array();
+         $params = explode('/', $_GET['load']);
+         
+         if(count($params)){
+            $controller = ucfirst($params[0]);
+            
+            if(isset($params[1]) && !empty($params[1])){
+               $action = $params[1];
+            }
+         }
       }
       
-      $controller = new $controller($controller, $action);
-      $controller->$action();
+      $controller .= 'Controller';
+      $load = new $controller($controller, $action);
+      
+      if(method_exists($load, $action)){
+         $load->$action();
+      }
    }
 }

@@ -8,7 +8,7 @@ class HomeController extends Controller{
       $stmt->execute();
       
       $posts = $stmt->fetchAll();
-echo "<pre>";print_r($posts);exit;      
+
       $this->render('index');
       
    }
